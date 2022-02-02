@@ -1,9 +1,9 @@
 import { Box, Button, Text, TextField, Image } from '@skynexui/components';
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import appConfig from '../config.json';
 
-function Titulo(props) {
+function Title(props) {
   const Tag = props.tag || 'h1';
   return (
     <>
@@ -19,23 +19,10 @@ function Titulo(props) {
   );
 }
 
-// Componente React
-// function HomePage() {
-//     // JSX
-//     return (
-//         <div>
-//             <GlobalStyle />
-//             <Titulo tag="h2">Boas vindas de volta!</Titulo>
-//             <h2>Discord - Alura Matrix</h2>
-//         </div>
-//     )
-// }
-// export default HomePage
-
-export default function PaginaInicial() {
-  // const username = 'omariosouto';
-  const [username, setUsername] = React.useState('omariosouto');
-  const roteamento = useRouter();
+export default function Home() {
+  const [username, setUsername] = useState("");
+  const minimalLength = 2;
+  const router = useRouter();
 
   return (
     <>
@@ -62,46 +49,25 @@ export default function PaginaInicial() {
             backgroundColor: appConfig.theme.colors.neutrals[700],
           }}
         >
-          {/* Formulário */}
           <Box
             as="form"
-            onSubmit={function (infosDoEvento) {
-              infosDoEvento.preventDefault();
-              console.log('Alguém submeteu o form');
-              roteamento.push('/chat');
-              // window.location.href = '/chat';
+            onSubmit={(e) => {
+              e.preventDefault();
+              router.push(`/chat?username=${username}`);
             }}
             styleSheet={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
               width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
             }}
           >
-            <Titulo tag="h2">Boas vindas de volta!</Titulo>
+            <Title tag="h2">Boas vindas de volta!</Title>
             <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
               {appConfig.name}
             </Text>
-
-            {/* <input
-                            type="text"
-                            value={username}
-                            onChange={function (event) {
-                                console.log('usuario digitou', event.target.value);
-                                // Onde ta o valor?
-                                const valor = event.target.value;
-                                // Trocar o valor da variavel
-                                // através do React e avise quem precisa
-                                setUsername(valor);
-                            }}
-                        /> */}
             <TextField
               value={username}
-              onChange={function (event) {
-                console.log('usuario digitou', event.target.value);
-                // Onde ta o valor?
-                const valor = event.target.value;
-                // Trocar o valor da variavel
-                // através do React e avise quem precisa
-                setUsername(valor);
+              onChange={(e) => {
+                setUsername(e.target.value);
               }}
               fullWidth
               textFieldColors={{
@@ -125,10 +91,6 @@ export default function PaginaInicial() {
               }}
             />
           </Box>
-          {/* Formulário */}
-
-
-          {/* Photo Area */}
           <Box
             styleSheet={{
               display: 'flex',
@@ -149,7 +111,11 @@ export default function PaginaInicial() {
                 borderRadius: '50%',
                 marginBottom: '16px',
               }}
-              src={`https://github.com/${username}.png`}
+              src={
+                username.length > minimalLength ?
+                `https://github.com/${username}.png` :
+                ""
+              }
             />
             <Text
               variant="body4"
@@ -163,7 +129,6 @@ export default function PaginaInicial() {
               {username}
             </Text>
           </Box>
-          {/* Photo Area */}
         </Box>
       </Box>
     </>
